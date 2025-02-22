@@ -10,6 +10,7 @@ from scipy.spatial.distance import cdist
 EPSILON = 1e-8
 batch_size = 64
 
+
 class BaseLearner(object):
     def __init__(self, args):
         self._cur_task = -1
@@ -55,38 +56,56 @@ class BaseLearner(object):
             self._reduce_exemplar(data_manager, per_class)
             self._construct_exemplar(data_manager, per_class)
 
-    def tsne(self,showcenters=False,Normalize=False):
+    def tsne(self, showcenters=False, Normalize=False):
         import umap
         import matplotlib.pyplot as plt
-        print('now draw tsne results of extracted features.')
-        tot_classes=self._total_classes
-        test_dataset = self.data_manager.get_dataset(np.arange(0, tot_classes), source='test', mode='test')
-        valloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
+
+        print("now draw tsne results of extracted features.")
+        tot_classes = self._total_classes
+        test_dataset = self.data_manager.get_dataset(
+            np.arange(0, tot_classes), source="test", mode="test"
+        )
+        valloader = DataLoader(
+            test_dataset, batch_size=batch_size, shuffle=False, num_workers=4
+        )
         vectors, y_true = self._extract_vectors(valloader)
         if showcenters:
-            fc_weight=self._network.fc.proj.cpu().detach().numpy()[:tot_classes]
+            fc_weight = self._network.fc.proj.cpu().detach().numpy()[:tot_classes]
             print(fc_weight.shape)
-            vectors=np.vstack([vectors,fc_weight])
-        
+            vectors = np.vstack([vectors, fc_weight])
+
         if Normalize:
             vectors = vectors / np.linalg.norm(vectors, axis=1, keepdims=True)
 
-        embedding = umap.UMAP(n_neighbors=5,
-                      min_dist=0.3,
-                      metric='correlation').fit_transform(vectors)
-        
+        embedding = umap.UMAP(
+            n_neighbors=5, min_dist=0.3, metric="correlation"
+        ).fit_transform(vectors)
+
         if showcenters:
-            clssscenters=embedding[-tot_classes:,:]
-            centerlabels=np.arange(tot_classes)
-            embedding=embedding[:-tot_classes,:]
-        scatter=plt.scatter(embedding[:,0],embedding[:,1],c=y_true,s=20,cmap=plt.cm.get_cmap("tab20"))
+            clssscenters = embedding[-tot_classes:, :]
+            centerlabels = np.arange(tot_classes)
+            embedding = embedding[:-tot_classes, :]
+        scatter = plt.scatter(
+            embedding[:, 0],
+            embedding[:, 1],
+            c=y_true,
+            s=20,
+            cmap=plt.cm.get_cmap("tab20"),
+        )
         plt.legend(*scatter.legend_elements())
         if showcenters:
-            plt.scatter(clssscenters[:,0],clssscenters[:,1],marker='*',s=50,c=centerlabels,cmap=plt.cm.get_cmap("tab20"),edgecolors='black')
-        
-        plt.savefig(str(self.args['model_name'])+str(tot_classes)+'tsne.pdf')
-        plt.close()
+            plt.scatter(
+                clssscenters[:, 0],
+                clssscenters[:, 1],
+                marker="*",
+                s=50,
+                c=centerlabels,
+                cmap=plt.cm.get_cmap("tab20"),
+                edgecolors="black",
+            )
 
+        plt.savefig(str(self.args["model_name"]) + str(tot_classes) + "tsne.pdf")
+        plt.close()
 
     def save_checkpoint(self, filename):
         self._network.cpu()
@@ -158,7 +177,7 @@ class BaseLearner(object):
             predicts = torch.topk(
                 outputs, k=self.topk, dim=1, largest=True, sorted=True
             )[
-                1
+                1  # (值，索引) 取索引
             ]  # [bs, topk]
             y_pred.append(predicts.cpu().numpy())
             y_true.append(targets.cpu().numpy())

@@ -3,7 +3,19 @@ import numpy as np
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import transforms
-from utils.data import iCIFAR10, iCIFAR100, iImageNet100, iImageNet1000, iCIFAR224, iImageNetR,iImageNetA,CUB, objectnet, omnibenchmark, vtab
+from utils.data import (
+    iCIFAR10,
+    iCIFAR100,
+    iImageNet100,
+    iImageNet1000,
+    iCIFAR224,
+    iImageNetR,
+    iImageNetA,
+    CUB,
+    objectnet,
+    omnibenchmark,
+    vtab,
+)
 
 
 class DataManager(object):
@@ -13,7 +25,7 @@ class DataManager(object):
         assert init_cls <= len(self._class_order), "No enough classes."
         self._increments = [init_cls]
         while sum(self._increments) + increment < len(self._class_order):
-            self._increments.append(increment)
+            self._increments.append(increment)  # init_cls + n * increment
         offset = len(self._class_order) - sum(self._increments)
         if offset > 0:
             self._increments.append(offset)
@@ -221,19 +233,19 @@ def _get_idata(dataset_name):
         return iImageNet1000()
     elif name == "imagenet100":
         return iImageNet100()
-    elif name== "cifar224":
+    elif name == "cifar224":
         return iCIFAR224()
-    elif name== "imagenetr":
+    elif name == "imagenetr":
         return iImageNetR()
-    elif name=="imageneta":
+    elif name == "imageneta":
         return iImageNetA()
-    elif name=="cub":
+    elif name == "cub":
         return CUB()
-    elif name=="objectnet":
+    elif name == "objectnet":
         return objectnet()
-    elif name=="omnibenchmark":
+    elif name == "omnibenchmark":
         return omnibenchmark()
-    elif name=="vtab":
+    elif name == "vtab":
         return vtab()
 
     else:

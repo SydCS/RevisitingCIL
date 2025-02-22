@@ -20,9 +20,11 @@ def train(args):
 
 def _train(args):
 
-    init_cls = 0 if args ["init_cls"] == args["increment"] else args["init_cls"]
-    logs_name = "logs/{}/{}/{}/{}".format(args["model_name"],args["dataset"], init_cls, args['increment'])
-    
+    init_cls = 0 if args["init_cls"] == args["increment"] else args["init_cls"]
+    logs_name = "logs/{}/{}/{}/{}".format(
+        args["model_name"], args["dataset"], init_cls, args["increment"]
+    )
+
     if not os.path.exists(logs_name):
         os.makedirs(logs_name)
 
@@ -54,9 +56,12 @@ def _train(args):
         args["init_cls"],
         args["increment"],
     )
-    model = factory.get_model(args["model_name"], args)
+    model = factory.get_model(args["model_name"], args)  # 工厂模式
 
-    cnn_curve, nme_curve = {"top1": [], "top5": []}, {"top1": [], "top5": []}
+    cnn_curve, nme_curve = {"top1": [], "top5": []}, {
+        "top1": [],
+        "top5": [],
+    }  # FC ; Nearest-Mean-of-Exemplars
     for task in range(data_manager.nb_tasks):
         logging.info("All params: {}".format(count_parameters(model._network)))
         logging.info(
@@ -81,11 +86,25 @@ def _train(args):
             logging.info("NME top1 curve: {}".format(nme_curve["top1"]))
             logging.info("NME top5 curve: {}\n".format(nme_curve["top5"]))
 
-            print('Average Accuracy (CNN):', sum(cnn_curve["top1"])/len(cnn_curve["top1"]))
-            print('Average Accuracy (NME):', sum(nme_curve["top1"])/len(nme_curve["top1"]))
+            print(
+                "Average Accuracy (CNN):",
+                sum(cnn_curve["top1"]) / len(cnn_curve["top1"]),
+            )
+            print(
+                "Average Accuracy (NME):",
+                sum(nme_curve["top1"]) / len(nme_curve["top1"]),
+            )
 
-            logging.info("Average Accuracy (CNN): {}".format(sum(cnn_curve["top1"])/len(cnn_curve["top1"])))
-            logging.info("Average Accuracy (NME): {}".format(sum(nme_curve["top1"])/len(nme_curve["top1"])))
+            logging.info(
+                "Average Accuracy (CNN): {}".format(
+                    sum(cnn_curve["top1"]) / len(cnn_curve["top1"])
+                )
+            )
+            logging.info(
+                "Average Accuracy (NME): {}".format(
+                    sum(nme_curve["top1"]) / len(nme_curve["top1"])
+                )
+            )
         else:
             logging.info("No NME accuracy.")
             logging.info("CNN: {}".format(cnn_accy["grouped"]))
@@ -96,10 +115,17 @@ def _train(args):
             logging.info("CNN top1 curve: {}".format(cnn_curve["top1"]))
             logging.info("CNN top5 curve: {}\n".format(cnn_curve["top5"]))
 
-            print('Average Accuracy (CNN):', sum(cnn_curve["top1"])/len(cnn_curve["top1"]))
-            logging.info("Average Accuracy (CNN): {}".format(sum(cnn_curve["top1"])/len(cnn_curve["top1"])))
+            print(
+                "Average Accuracy (CNN):",
+                sum(cnn_curve["top1"]) / len(cnn_curve["top1"]),
+            )
+            logging.info(
+                "Average Accuracy (CNN): {}".format(
+                    sum(cnn_curve["top1"]) / len(cnn_curve["top1"])
+                )
+            )
 
-    
+
 def _set_device(args):
     device_type = args["device"]
     gpus = []

@@ -44,7 +44,7 @@ class iCIFAR100(iData):
         transforms.RandomCrop(32, padding=4),
         transforms.RandomHorizontalFlip(),
         transforms.ColorJitter(brightness=63 / 255),
-        transforms.ToTensor()
+        transforms.ToTensor(),
     ]
     test_trsf = [transforms.ToTensor()]
     common_trsf = [
@@ -71,8 +71,8 @@ def build_transform(is_train, args):
     resize_im = input_size > 32
     if is_train:
         scale = (0.05, 1.0)
-        ratio = (3. / 4., 4. / 3.)
-        
+        ratio = (3.0 / 4.0, 4.0 / 3.0)
+
         transform = [
             transforms.RandomResizedCrop(input_size, scale=scale, ratio=ratio),
             transforms.RandomHorizontalFlip(p=0.5),
@@ -84,20 +84,22 @@ def build_transform(is_train, args):
     if resize_im:
         size = int((256 / 224) * input_size)
         t.append(
-            transforms.Resize(size, interpolation=3),  # to maintain same ratio w.r.t. 224 images
+            transforms.Resize(
+                size, interpolation=3
+            ),  # to maintain same ratio w.r.t. 224 images
         )
         t.append(transforms.CenterCrop(input_size))
     t.append(transforms.ToTensor())
-    
+
     # return transforms.Compose(t)
     return t
+
 
 class iCIFAR224(iData):
     use_path = False
 
-    
-    train_trsf=build_transform(True, None)
-    test_trsf=build_transform(False, None)
+    train_trsf = build_transform(True, None)
+    test_trsf = build_transform(False, None)
     common_trsf = [
         # transforms.ToTensor(),
     ]
@@ -113,6 +115,7 @@ class iCIFAR224(iData):
         self.test_data, self.test_targets = test_dataset.data, np.array(
             test_dataset.targets
         )
+
 
 class iImageNet1000(iData):
     use_path = True
@@ -175,11 +178,10 @@ class iImageNet100(iData):
 
 class iImageNetR(iData):
     use_path = True
-    
-    train_trsf=build_transform(True, None)
-    test_trsf=build_transform(False, None)
-    common_trsf = [    ]
 
+    train_trsf = build_transform(True, None)
+    test_trsf = build_transform(False, None)
+    common_trsf = []
 
     class_order = np.arange(200).tolist()
 
@@ -197,10 +199,10 @@ class iImageNetR(iData):
 
 class iImageNetA(iData):
     use_path = True
-    
-    train_trsf=build_transform(True, None)
-    test_trsf=build_transform(False, None)
-    common_trsf = [    ]
+
+    train_trsf = build_transform(True, None)
+    test_trsf = build_transform(False, None)
+    common_trsf = []
 
     class_order = np.arange(200).tolist()
 
@@ -216,13 +218,12 @@ class iImageNetA(iData):
         self.test_data, self.test_targets = split_images_labels(test_dset.imgs)
 
 
-
 class CUB(iData):
     use_path = True
-    
-    train_trsf=build_transform(True, None)
-    test_trsf=build_transform(False, None)
-    common_trsf = [    ]
+
+    train_trsf = build_transform(True, None)
+    test_trsf = build_transform(False, None)
+    common_trsf = []
 
     class_order = np.arange(200).tolist()
 
@@ -240,10 +241,10 @@ class CUB(iData):
 
 class objectnet(iData):
     use_path = True
-    
-    train_trsf=build_transform(True, None)
-    test_trsf=build_transform(False, None)
-    common_trsf = [    ]
+
+    train_trsf = build_transform(True, None)
+    test_trsf = build_transform(False, None)
+    common_trsf = []
 
     class_order = np.arange(200).tolist()
 
@@ -261,10 +262,10 @@ class objectnet(iData):
 
 class omnibenchmark(iData):
     use_path = True
-    
-    train_trsf=build_transform(True, None)
-    test_trsf=build_transform(False, None)
-    common_trsf = [    ]
+
+    train_trsf = build_transform(True, None)
+    test_trsf = build_transform(False, None)
+    common_trsf = []
 
     class_order = np.arange(300).tolist()
 
@@ -280,13 +281,12 @@ class omnibenchmark(iData):
         self.test_data, self.test_targets = split_images_labels(test_dset.imgs)
 
 
-
 class vtab(iData):
     use_path = True
-    
-    train_trsf=build_transform(True, None)
-    test_trsf=build_transform(False, None)
-    common_trsf = [    ]
+
+    train_trsf = build_transform(True, None)
+    test_trsf = build_transform(False, None)
+    common_trsf = []
 
     class_order = np.arange(50).tolist()
 
