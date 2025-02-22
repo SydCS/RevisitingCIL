@@ -1,0 +1,16 @@
+# 忽略所有 __pycache__ 目录及其内容
+**/__pycache__/
+
+# 忽略所有 .pyc 文件
+**/*.pyc
+
+# 其他可选忽略规则（根据项目需求）
+# 忽略 IDE 或编辑器生成的临时文件
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# 忽略系统生成的临时文件
+Thumbs.db
+.DS_Store
