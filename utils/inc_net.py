@@ -129,7 +129,7 @@ def get_convnet(args, pretrained=False):
 
     elif "_adapter" in name:
         ffn_num = args["ffn_num"]
-        if args["model_name"] == "adam_adapter":
+        if args["model_name"] == "aper_adapter":
             from convs import vision_transformer_adapter
             from easydict import EasyDict
 
